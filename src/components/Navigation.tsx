@@ -9,6 +9,8 @@ import MatchesScreen from './MatchesScreen'
 import ProfileScreen from './ProfileScreen'
 import { LogOut } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import FloatingChatButton from './FloatingChatButton'
+import AssistantConsole from './AssistantConsole'
 
 interface NavigationProps {
   user: AuthUser
@@ -21,6 +23,7 @@ const Navigation: React.FC<NavigationProps> = ({ user, profile }) => {
   const [activeTab, setActiveTab] = useState<TabType>('discover')
   const [chatOpen, setChatOpen] = useState(false)
   const [useWhatsAppStyle, setUseWhatsAppStyle] = useState(true)
+  const [assistantOpen, setAssistantOpen] = useState(false)
 
   const handleSignOut = async () => {
     try {
@@ -156,9 +159,27 @@ const Navigation: React.FC<NavigationProps> = ({ user, profile }) => {
         </button>
       </div>
 
+      {/* Assistant Console Overlay */}
+      {assistantOpen && (
+        <AssistantConsole
+          user={user}
+          profile={profile}
+          onClose={() => setAssistantOpen(false)}
+          onNavigate={(tab) => { setActiveTab(tab); setAssistantOpen(false) }}
+          onOpenChat={() => { setChatOpen(true); setAssistantOpen(false) }}
+          onSetChatStyle={(useWhatsApp) => setUseWhatsAppStyle(useWhatsApp)}
+          onLogout={handleSignOut}
+        />
+      )}
+
       {/* Main Content */}
-      <div className="pb-20">
+      <div className="pb-24">
         {renderTabContent()}
+      </div>
+
+      {/* Floating Chat Button opens Assistant */}
+      <div className="fixed bottom-20 right-4 z-40">
+        <FloatingChatButton onClick={() => setAssistantOpen(true)} />
       </div>
 
       {/* Bottom Navigation */}
