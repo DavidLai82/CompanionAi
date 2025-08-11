@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Heart, MessageCircle, Search, User, Settings } from 'lucide-react'
+import { Heart, MessageCircle, Search, User, Settings, LogOut } from 'lucide-react'
 import type { User as AuthUser } from '@supabase/supabase-js'
 import type { Profile } from '../lib/supabase'
 import ChatInterface from './ChatInterface'
@@ -7,6 +7,7 @@ import WhatsAppChatInterface from './WhatsAppChatInterface'
 import DiscoveryFeed from './DiscoveryFeed'
 import MatchesScreen from './MatchesScreen'
 import ProfileScreen from './ProfileScreen'
+import { supabase } from '../lib/supabase'
 
 interface NavigationProps {
   user: AuthUser
@@ -134,6 +135,24 @@ const Navigation: React.FC<NavigationProps> = ({ user, profile }) => {
 
   return (
     <div className="min-h-screen bg-romantic-gradient">
+      {/* Top Header with Logout */}
+      <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-sm border-b border-romantic-200 px-4 py-3 flex items-center justify-between">
+        <div className="font-semibold text-romantic-800">Irene</div>
+        <div className="flex items-center gap-2">
+          <button className="p-2 rounded-full hover:bg-romantic-50 transition-colors" aria-label="Settings">
+            <Settings className="w-5 h-5 text-romantic-600" />
+          </button>
+          <button
+            onClick={() => supabase.auth.signOut()}
+            className="p-2 rounded-full hover:bg-romantic-50 transition-colors"
+            aria-label="Log out"
+            title="Log out"
+          >
+            <LogOut className="w-5 h-5 text-romantic-600" />
+          </button>
+        </div>
+      </div>
+
       {/* Main Content */}
       <div className="pb-20">
         {renderTabContent()}
