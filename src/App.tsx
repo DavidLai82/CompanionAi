@@ -225,7 +225,29 @@ function App() {
 
           <div className="flex flex-col gap-4 items-center">
             <button
-              onClick={() => setIsChatOpen(true)}
+              onClick={() => {
+                console.log('Start Chat clicked. Current state:', { user: !!user, profile: !!profile, isChatOpen })
+                // If no user/profile (demo mode), create them
+                if (!user || !profile) {
+                  console.log('Creating demo user and profile for chat')
+                  setUser({ 
+                    id: 'demo-user', 
+                    email: 'demo@example.com',
+                    app_metadata: {},
+                    user_metadata: {},
+                    aud: 'authenticated',
+                    created_at: new Date().toISOString()
+                  } as any)
+                  setProfile({
+                    id: 'demo-profile',
+                    user_id: 'demo-user',
+                    preferred_nickname: 'Demo User',
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                  } as any)
+                }
+                setIsChatOpen(true)
+              }}
               className="px-8 py-4 bg-gradient-to-r from-romantic-500 to-purple-romantic-500 text-white rounded-full text-lg font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               Start Chatting 💬

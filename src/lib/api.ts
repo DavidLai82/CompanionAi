@@ -11,6 +11,12 @@ export async function chatWithIrene(
   recentMessages?: any[]
 ) {
   try {
+    // Demo mode detection
+    if (userId === 'demo-user' || !SUPABASE_URL || SUPABASE_URL === 'https://your-project-ref.supabase.co') {
+      console.log('Demo mode: Using simulated chat response')
+      return getDemoResponse(message, userNickname || 'User')
+    }
+
     const { data: { session } } = await supabase.auth.getSession()
     
     const response = await fetch(`${FUNCTIONS_URL}/chat-with-irene`, {
@@ -199,6 +205,11 @@ export async function trackEvent(
   eventData: Record<string, any> = {}
 ) {
   try {
+    if (userId === 'demo-user') {
+      console.log('Demo mode: Skipping analytics tracking')
+      return
+    }
+
     const { error } = await supabase
       .from('user_analytics')
       .insert([{
@@ -212,4 +223,26 @@ export async function trackEvent(
   } catch (error) {
     console.error('Error tracking event:', error)
   }
+}
+
+// Demo chat responses for when Supabase/OpenAI is not configured
+function getDemoResponse(message: string, userName: string): Promise<string> {
+  return new Promise((resolve) => {
+    // Simulate API delay
+    setTimeout(() => {
+      const responses = [
+        `Hi ${userName}! 💕 This is demo mode - I'd love to chat with you!`,
+        `That's interesting, ${userName}! 😊 In full mode, I'd have even more to say!`,
+        `You're so sweet, ${userName}! 💖 This demo shows how our chat would work!`,
+        `I love talking with you! 🌟 Configure Supabase & OpenAI for the full experience!`,
+        `${userName}, you make me smile! 😄 This is just a taste of what we could discuss!`,
+        `That's fascinating! 🤔 With full AI integration, our conversations would be amazing!`,
+        `You're wonderful, ${userName}! 💫 Want to see the real AI magic? Set up the full version!`,
+        `I'm enjoying our demo chat! 🎉 The complete version has voice chat and more features!`,
+      ]
+      
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)]
+      resolve(randomResponse)
+    }, 1000 + Math.random() * 2000) // 1-3 second delay
+  })
 }
