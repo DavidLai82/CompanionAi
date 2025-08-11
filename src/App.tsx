@@ -71,6 +71,16 @@ function App() {
           // Check if user needs personality assessment
           checkPersonalityAssessment(userId)
         }
+      } else if (error && error.code === 'PGRST205') {
+        // Profiles table doesn't exist, create demo profile
+        console.warn('Profiles table not found, using demo mode')
+        setProfile({
+          id: userId,
+          user_id: userId,
+          preferred_nickname: 'User',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        } as any)
       } else if (error) {
         console.error('Error loading profile:', error)
       } else {
@@ -92,6 +102,12 @@ function App() {
         .select('id')
         .eq('user_id', userId)
         .limit(1)
+
+      if (error && error.code === 'PGRST205') {
+        // Personality assessments table doesn't exist, skip assessment
+        console.warn('Personality assessments table not found, skipping assessment')
+        return
+      }
 
       if (!error && (!data || data.length === 0)) {
         setShowPersonalityAssessment(true)
@@ -122,7 +138,36 @@ function App() {
 
   // Show landing page for first-time visitors
   if (showLanding && !user) {
-    return <LandingPage onGetStarted={() => setShowLanding(false)} />
+    return <LandingPage onGetStarted={() => {
+      // Check if Supabase is properly configured before proceeding
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+      
+      if (!supabaseUrl || !supabaseKey || 
+          supabaseUrl === 'https://your-project-ref.supabase.co' || 
+          supabaseKey === 'your-supabase-anon-key') {
+        // Environment not configured, create demo user
+        setUser({ 
+          id: 'demo-user', 
+          email: 'demo@example.com',
+          app_metadata: {},
+          user_metadata: {},
+          aud: 'authenticated',
+          created_at: new Date().toISOString()
+        } as any)
+        setProfile({
+          id: 'demo-profile',
+          user_id: 'demo-user',
+          preferred_nickname: 'Demo User',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        } as any)
+        setShowLanding(false)
+        return
+      }
+      
+      setShowLanding(false)
+    }} />
   }
 
   if (!user) {
