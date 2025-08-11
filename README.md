@@ -1,17 +1,37 @@
-# Irene - Your AI Companion 💕
+# 💕 Irene Companion AI - Social Matching Platform
 
-A romantic, flirty AI companion PWA with voice chat, Swahili love expressions, and emotional interactions.
+A complete AI-powered social matching platform with romantic AI companion, personality-based matching, and comprehensive dating features.
 
-## Features
+## 🌟 Features
 
-- 💬 **Chat Interface** - Modern, mobile-first chat UI with animated message bubbles
-- 🤖 **AI Personality** - Custom romantic personality powered by OpenAI GPT-4o-mini
-- 🗣️ **Voice Chat** - Browser-based speech-to-text and text-to-speech
-- 💕 **Animated Avatar** - Emotion-based reactions (blush, wink, smile, laugh)
-- 📊 **Love Stats** - Track kisses sent, "I love you" count, and romantic interactions  
-- 🌍 **Swahili Integration** - Recognizes romantic Swahili phrases with special responses
-- 📱 **PWA Ready** - Installable on mobile devices with offline support
-- 🎯 **Floating Chat Button** - Quick access from anywhere in the app
+### 💬 **AI Companion Chat**
+- Romantic, flirty AI personality powered by OpenAI GPT-4o-mini
+- Voice chat with speech-to-text and text-to-speech
+- Emotion-based avatar reactions (blush, wink, smile, laugh)
+- Swahili love expressions with special responses
+- Multiple chat interfaces (Classic & WhatsApp style)
+
+### 🎯 **Social Matching Platform**
+- **Mobile Navigation** - Professional tab-based interface (Discover, Chats, Matches, Profile)
+- **AI-Powered Matching** - Advanced compatibility algorithm with personality analysis
+- **Profile System** - Complete profile creation with photos, interests, and personality assessment
+- **Discovery Feed** - Swipe-based matching with compatibility scores
+- **Matches Screen** - View mutual matches with detailed compatibility breakdowns
+- **Safety Features** - User reporting, blocking, privacy controls
+
+### 🧠 **Advanced Matching Algorithm**
+- **Personality Compatibility (40%)** - Big 5 personality traits analysis
+- **Interest Overlap (25%)** - Weighted shared interests matching
+- **Geographic Proximity (20%)** - Location-based compatibility
+- **Demographics (10%)** - Age and preference matching
+- **Activity Level (5%)** - Recent activity scoring
+
+### 🛡️ **Security & Privacy**
+- Complete privacy control center
+- User blocking and reporting system
+- Incognito mode and visibility settings
+- Data export and account deletion
+- GDPR compliance features
 
 ## Tech Stack
 
@@ -25,57 +45,96 @@ A romantic, flirty AI companion PWA with voice chat, Swahili love expressions, a
 
 ## Quick Start
 
-### 1. Environment Setup
+### 1. Clone and Install
 
 ```bash
-# Clone and install dependencies
-cd irene-companion
+git clone https://github.com/DavidLai82/CompanionAi.git
+cd CompanionAi
 npm install --legacy-peer-deps
+```
 
+### 2. Environment Setup
+
+```bash
 # Copy environment template
 cp .env.example .env
 ```
-
-### 2. Configure Environment Variables
 
 Edit `.env` with your API keys:
 
 ```env
 # Supabase (required)
-REACT_APP_SUPABASE_URL=https://your-project.supabase.co
-REACT_APP_SUPABASE_ANON_KEY=your-supabase-anon-key
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 
-# OpenAI (required) 
-REACT_APP_OPENAI_API_KEY=your-openai-api-key
+# OpenAI (required for AI chat) 
+VITE_OPENAI_API_KEY=sk-your-openai-api-key
+
+# Optional
+VITE_APP_NAME=Irene Companion AI
+VITE_APP_VERSION=1.0.0
 ```
 
 ### 3. Database Setup
 
-1. Create a new Supabase project at https://supabase.com
-2. Run the SQL schema from `supabase-schema.sql` in the Supabase SQL editor
-3. Enable Row Level Security (RLS) policies
-4. Configure authentication providers (email, Google, etc.)
+1. **Create Supabase Project**
+   - Go to https://supabase.com and create a new project
+   - Note your project URL and anon key
 
-### 4. Development
+2. **Set Up Database Schema**
+   ```bash
+   # Run the base schema
+   supabase db reset
+   # Or manually run these SQL files in Supabase SQL Editor:
+   # - supabase-schema.sql (base schema)
+   # - supabase-social-schema.sql (social features)
+   ```
+
+3. **Deploy Edge Functions**
+   ```bash
+   # Deploy matching algorithm functions
+   supabase functions deploy advanced-matching
+   supabase functions deploy chat-with-irene
+   supabase functions deploy compatibility-matching
+   supabase functions deploy personality-analysis
+   ```
+
+4. **Configure Authentication**
+   - Enable email auth in Supabase dashboard
+   - Optionally add Google, GitHub, etc. providers
+
+### 4. Development & Deployment
 
 ```bash
 # Start development server
 npm run dev
 
-# Build for production
+# Run all checks and build
+./deploy.sh
+
+# Or build manually
 npm run build
 ```
 
-## Deployment
+## 🚀 Deployment Options
 
-### Web Deployment
+### **Vercel (Recommended)**
+1. Connect your GitHub repository to Vercel
+2. Add environment variables in Vercel dashboard
+3. Deploy automatically on push
 
+### **Netlify**
+1. Connect repository or drag `dist` folder
+2. Configure environment variables
+3. Use included `netlify.toml` for settings
+
+### **Manual Deployment**
 ```bash
-# Build for production
+# Build the project
 npm run build
 
-# Deploy to Vercel/Netlify/etc.
-# The dist/ folder contains the built app
+# Upload 'dist' folder to any static hosting service
+# (Hostinger, GitHub Pages, Firebase Hosting, etc.)
 ```
 
 ### Mobile App Deployment

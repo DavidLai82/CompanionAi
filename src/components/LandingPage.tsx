@@ -10,7 +10,6 @@ import {
   ArrowRight,
   Heart,
   Zap,
-  CheckCircle,
   Star,
   Github,
   Twitter,
@@ -36,7 +35,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
+      transition: { duration: 0.6 }
     }
   }
 
@@ -54,8 +53,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
     y: [0, -10, 0],
     transition: {
       duration: 3,
-      repeat: Infinity,
-      ease: "easeInOut"
+      repeat: Infinity
     }
   }
 

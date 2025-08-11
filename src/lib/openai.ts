@@ -2,7 +2,7 @@ import OpenAI from 'openai'
 import type { Message, SwahiliSlang } from './supabase'
 
 const openai = new OpenAI({
-  apiKey: process.env.REACT_APP_OPENAI_API_KEY,
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true // Note: In production, move this to a backend API
 })
 
