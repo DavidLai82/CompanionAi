@@ -41,7 +41,7 @@ npm install --legacy-peer-deps
 ### 3. **Test Development Server** (1 minute)
 ```bash
 npm run dev
-# Should open at http://localhost:5173
+# Opens at http://localhost:3000
 ```
 
 ### 4. **Build for Production** (1 minute)
