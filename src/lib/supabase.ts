@@ -13,6 +13,14 @@ export interface Profile {
   full_name?: string
   avatar_url?: string
   preferred_nickname: string
+  age?: number
+  location?: string
+  bio?: string
+  gender?: string
+  seeking_gender?: string
+  verification_status?: string
+  last_active?: string
+  is_online?: boolean
   created_at: string
   updated_at: string
 }

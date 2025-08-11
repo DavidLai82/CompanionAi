@@ -10,7 +10,6 @@ import {
   ArrowRight,
   Heart,
   Zap,
-  Globe,
   CheckCircle,
   Star,
   Github,

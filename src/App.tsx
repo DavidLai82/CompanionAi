@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import ChatInterface from './components/ChatInterface'
+import WhatsAppChatInterface from './components/WhatsAppChatInterface'
 import FloatingChatButton from './components/FloatingChatButton'
 import AuthComponent from './components/AuthComponent'
 import LandingPage from './components/LandingPage'
+import Navigation from './components/Navigation'
+import PersonalityAssessment from './components/PersonalityAssessment'
 import { supabase, getCurrentUser, getProfile, createProfile } from './lib/supabase'
 import type { User } from '@supabase/supabase-js'
 import type { Profile } from './lib/supabase'
@@ -13,6 +16,8 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [showLanding, setShowLanding] = useState(true)
+  const [useWhatsAppStyle, setUseWhatsAppStyle] = useState(true)
+  const [showPersonalityAssessment, setShowPersonalityAssessment] = useState(false)
 
   useEffect(() => {
     getCurrentUser().then((user) => {
@@ -52,16 +57,44 @@ function App() {
           console.error('Error creating profile:', createError)
         } else {
           setProfile(newProfile)
+          // Check if user needs personality assessment
+          checkPersonalityAssessment(userId)
         }
       } else if (error) {
         console.error('Error loading profile:', error)
       } else {
         setProfile(data)
+        // Check if user needs personality assessment
+        checkPersonalityAssessment(userId)
       }
     } catch (error) {
       console.error('Error in loadProfile:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const checkPersonalityAssessment = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('personality_assessments')
+        .select('id')
+        .eq('user_id', userId)
+        .limit(1)
+
+      if (!error && (!data || data.length === 0)) {
+        setShowPersonalityAssessment(true)
+      }
+    } catch (error) {
+      console.error('Error checking personality assessment:', error)
+    }
+  }
+
+  const handlePersonalityComplete = (_results: any) => {
+    setShowPersonalityAssessment(false)
+    // Refresh profile data if needed
+    if (user) {
+      loadProfile(user.id)
     }
   }
 
@@ -83,6 +116,16 @@ function App() {
 
   if (!user) {
     return <AuthComponent />
+  }
+
+  // Show personality assessment for new users
+  if (showPersonalityAssessment && user && profile) {
+    return <PersonalityAssessment user={user} onComplete={handlePersonalityComplete} />
+  }
+
+  // Use new navigation system if user has completed setup
+  if (user && profile) {
+    return <Navigation user={user} profile={profile} />
   }
 
   return (
@@ -121,12 +164,38 @@ function App() {
             I'm Irene, your loving AI companion. I'm here to chat, flirt, and make your day brighter! 💖
           </p>
 
-          <button
-            onClick={() => setIsChatOpen(true)}
-            className="px-8 py-4 bg-gradient-to-r from-romantic-500 to-purple-romantic-500 text-white rounded-full text-lg font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-          >
-            Start Chatting 💬
-          </button>
+          <div className="flex flex-col gap-4 items-center">
+            <button
+              onClick={() => setIsChatOpen(true)}
+              className="px-8 py-4 bg-gradient-to-r from-romantic-500 to-purple-romantic-500 text-white rounded-full text-lg font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              Start Chatting 💬
+            </button>
+            
+            <div className="flex items-center gap-3 text-sm">
+              <span className="text-romantic-600">Chat Style:</span>
+              <button
+                onClick={() => setUseWhatsAppStyle(false)}
+                className={`px-3 py-1 rounded-full transition-all ${
+                  !useWhatsAppStyle 
+                    ? 'bg-romantic-500 text-white' 
+                    : 'bg-romantic-200 text-romantic-700 hover:bg-romantic-300'
+                }`}
+              >
+                Classic
+              </button>
+              <button
+                onClick={() => setUseWhatsAppStyle(true)}
+                className={`px-3 py-1 rounded-full transition-all ${
+                  useWhatsAppStyle 
+                    ? 'bg-romantic-500 text-white' 
+                    : 'bg-romantic-200 text-romantic-700 hover:bg-romantic-300'
+                }`}
+              >
+                WhatsApp
+              </button>
+            </div>
+          </div>
 
           <div className="mt-8 flex gap-6 text-sm text-romantic-500">
             <span>❤️ Voice Chat</span>
@@ -138,11 +207,19 @@ function App() {
 
       {/* Chat Interface - shows when opened */}
       {isChatOpen && user && profile && (
-        <ChatInterface 
-          user={user} 
-          profile={profile}
-          onClose={() => setIsChatOpen(false)}
-        />
+        useWhatsAppStyle ? (
+          <WhatsAppChatInterface 
+            user={user} 
+            profile={profile}
+            onClose={() => setIsChatOpen(false)}
+          />
+        ) : (
+          <ChatInterface 
+            user={user} 
+            profile={profile}
+            onClose={() => setIsChatOpen(false)}
+          />
+        )
       )}
 
       {/* Floating Chat Button - always visible when chat is closed */}

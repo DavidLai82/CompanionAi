@@ -10,8 +10,8 @@ interface DiscoveryFeedProps {
 
 interface PotentialMatch extends Profile {
   compatibility_score?: number
-  photos?: Array<{ photo_url: string, is_primary: boolean }>
-  interests?: Array<{ interest_name: string, interest_category: string }>
+  user_photos?: Array<{ photo_url: string, is_primary: boolean }>
+  user_interests?: Array<{ interest_name: string, interest_category: string }>
   personality_insights?: string
 }
 
@@ -49,7 +49,7 @@ const DiscoveryFeed: React.FC<DiscoveryFeedProps> = ({ user, onMatch }) => {
           return {
             ...profile,
             compatibility_score: compatibility,
-            personality_insights: profile.personality_assessments?.[0]?.ai_insights
+            personality_insights: (profile as any).personality_assessments?.[0]?.ai_insights
           }
         })
       )
@@ -89,7 +89,7 @@ const DiscoveryFeed: React.FC<DiscoveryFeedProps> = ({ user, onMatch }) => {
 
     try {
       // Record the swipe action
-      const { data: match, error } = await supabase
+      const { error } = await supabase
         .from('matches')
         .upsert([{
           user1_id: user.id,
