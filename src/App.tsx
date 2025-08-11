@@ -24,10 +24,13 @@ function App() {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
     const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
     
+    console.log('Environment check:', { supabaseUrl, supabaseKey })
+    
     if (!supabaseUrl || !supabaseKey || 
         supabaseUrl === 'https://your-project-ref.supabase.co' || 
         supabaseKey === 'your-supabase-anon-key') {
       // Environment not configured, keep landing visible
+      console.log('Environment not configured - showing landing page')
       return
     }
 
