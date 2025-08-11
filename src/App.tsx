@@ -13,7 +13,7 @@ import type { Profile } from './lib/supabase'
 function App() {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [showLanding, setShowLanding] = useState(true)
   const [useWhatsAppStyle, setUseWhatsAppStyle] = useState(true)
