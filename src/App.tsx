@@ -20,6 +20,19 @@ function App() {
   const [showPersonalityAssessment, setShowPersonalityAssessment] = useState(false)
 
   useEffect(() => {
+    // Check if environment variables are configured
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+    
+    if (!supabaseUrl || !supabaseKey || 
+        supabaseUrl === 'https://your-project-ref.supabase.co' || 
+        supabaseKey === 'your-supabase-anon-key') {
+      // Environment not configured, show landing page
+      setLoading(false)
+      return
+    }
+
+    // Environment is configured, try to connect to Supabase
     getCurrentUser().then((user) => {
       setUser(user)
       if (user) {
@@ -27,6 +40,9 @@ function App() {
       } else {
         setLoading(false)
       }
+    }).catch((error) => {
+      console.error('Error connecting to Supabase:', error)
+      setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(

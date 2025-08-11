@@ -22,12 +22,25 @@ interface LandingPageProps {
 
 const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   const [isVisible, setIsVisible] = useState(false)
+  const [showSetupNotice, setShowSetupNotice] = useState(false)
   const { scrollY } = useScroll()
   const y = useTransform(scrollY, [0, 300], [0, -50])
   const opacity = useTransform(scrollY, [0, 300], [1, 0.8])
 
   useEffect(() => {
     setIsVisible(true)
+    
+    // Check if environment variables are configured
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+    const openaiKey = import.meta.env.VITE_OPENAI_API_KEY
+    
+    if (!supabaseUrl || !supabaseKey || !openaiKey ||
+        supabaseUrl === 'https://your-project-ref.supabase.co' || 
+        supabaseKey === 'your-supabase-anon-key' ||
+        openaiKey === 'sk-your-openai-api-key') {
+      setShowSetupNotice(true)
+    }
   }, [])
 
   const fadeInUp = {
@@ -59,6 +72,31 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-x-hidden">
+      {/* Setup Notice Banner */}
+      {showSetupNotice && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-600 text-black p-3">
+          <div className="max-w-4xl mx-auto text-center">
+            <p className="text-sm font-medium">
+              ⚠️ Environment variables not configured. 
+              <a 
+                href="https://github.com/DavidLai82/CompanionAi#quick-start" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="underline hover:no-underline ml-1"
+              >
+                See setup guide
+              </a>
+              <button 
+                onClick={() => setShowSetupNotice(false)}
+                className="ml-4 text-yellow-800 hover:text-black"
+              >
+                ✕
+              </button>
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
