@@ -4,6 +4,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Use relative paths so builds work on subpaths (e.g., GitHub Pages)
+  base: './',
   plugins: [
     react(),
     VitePWA({
@@ -16,8 +18,8 @@ export default defineConfig({
         theme_color: '#ec4899',
         background_color: '#fdf2f8',
         display: 'standalone',
-        scope: '/',
-        start_url: '/',
+        scope: '.',
+        start_url: '.',
         icons: [
           {
             src: 'pwa-192x192.png',
