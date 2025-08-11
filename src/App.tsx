@@ -114,6 +114,11 @@ function App() {
     }
   }
 
+  // Show landing page for first-time visitors immediately
+  if (showLanding) {
+    return <LandingPage onGetStarted={() => setShowLanding(false)} />
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-romantic-gradient flex items-center justify-center">
@@ -123,11 +128,6 @@ function App() {
         </div>
       </div>
     )
-  }
-
-  // Show landing page for first-time visitors
-  if (showLanding && !user) {
-    return <LandingPage onGetStarted={() => setShowLanding(false)} />
   }
 
   if (!user) {
