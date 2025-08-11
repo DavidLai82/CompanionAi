@@ -13,7 +13,7 @@ import type { Profile } from './lib/supabase'
 function App() {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [showLanding, setShowLanding] = useState(true)
   const [useWhatsAppStyle, setUseWhatsAppStyle] = useState(true)
@@ -27,22 +27,18 @@ function App() {
     if (!supabaseUrl || !supabaseKey || 
         supabaseUrl === 'https://your-project-ref.supabase.co' || 
         supabaseKey === 'your-supabase-anon-key') {
-      // Environment not configured, show landing page
-      setLoading(false)
+      // Environment not configured, keep landing visible
       return
     }
 
-    // Environment is configured, try to connect to Supabase
+    // Environment is configured, try to connect to Supabase in background
     getCurrentUser().then((user) => {
       setUser(user)
       if (user) {
         loadProfile(user.id)
-      } else {
-        setLoading(false)
       }
     }).catch((error) => {
       console.error('Error connecting to Supabase:', error)
-      setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -53,7 +49,6 @@ function App() {
         } else {
           setProfile(null)
         }
-        setLoading(false)
       }
     )
 
